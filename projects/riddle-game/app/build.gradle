@@ -1,0 +1,4 @@
+plugins { id 'com.android.application' }
+android { namespace 'org.example.riddlegame'; compileSdk 35
+  defaultConfig { applicationId 'org.example.riddlegame'; minSdk 24; targetSdk 28; versionCode 1; versionName '0.1-reconstruction' }
+}

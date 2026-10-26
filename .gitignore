@@ -1,0 +1,16 @@
+# Local secrets and tools
+.env
+.env.*
+!.env.example
+local.properties
+*.keystore
+*.jks
+*.p12
+*.pem
+*credentials*.json
+**/.gradle/
+**/build/
+**/.idea/
+**/.DS_Store
+__pycache__/
+.ipynb_checkpoints/

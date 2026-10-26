@@ -1,0 +1,130 @@
+[
+  {
+    "id": "tabgeo",
+    "type": "tab",
+    "label": "GeoEarthquake (reconstruction)",
+    "disabled": false,
+    "info": "Recreated from 2019–2020 project report, not recovered original flow."
+  },
+  {
+    "id": "injectgeo",
+    "type": "inject",
+    "z": "tabgeo",
+    "name": "Fetch recent earthquakes",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 140,
+    "y": 100,
+    "wires": [
+      [
+        "httpgeo"
+      ]
+    ]
+  },
+  {
+    "id": "httpgeo",
+    "type": "http request",
+    "z": "tabgeo",
+    "name": "USGS earthquakes (30 days, M4.5+)",
+    "method": "GET",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_month.geojson",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": false,
+    "headers": [],
+    "x": 415,
+    "y": 100,
+    "wires": [
+      [
+        "parsegeo"
+      ]
+    ]
+  },
+  {
+    "id": "parsegeo",
+    "type": "function",
+    "z": "tabgeo",
+    "name": "Format earthquake messages",
+    "func": "const data = msg.payload;\nif (!data || !Array.isArray(data.features)) { node.error('Invalid USGS GeoJSON', msg); return null; }\nconst alerts = data.features.slice(0, 20).map(f => {\n  const p = f.properties || {};\n  const c = f.geometry?.coordinates || [];\n  return {topic: 'GeoEarthquake — recent earthquake', payload: `Earthquake: ${p.place || 'Unknown'}\\nMagnitude: ${p.mag ?? 'N/A'}\\nLongitude: ${c[0] ?? 'N/A'}, Latitude: ${c[1] ?? 'N/A'}\\nTime: ${p.time ? new Date(p.time).toISOString() : 'N/A'}\\nDetails: ${p.url || ''}`};\n});\nreturn [alerts, {payload: `Processed ${alerts.length} events. Done! See you next month with more updates.`}];",
+    "outputs": 2,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 695,
+    "y": 100,
+    "wires": [
+      [
+        "debuggeo",
+        "mailgeo"
+      ],
+      [
+        "donegeo"
+      ]
+    ]
+  },
+  {
+    "id": "debuggeo",
+    "type": "debug",
+    "z": "tabgeo",
+    "name": "Preview alerts",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "x": 955,
+    "y": 65,
+    "wires": []
+  },
+  {
+    "id": "donegeo",
+    "type": "debug",
+    "z": "tabgeo",
+    "name": "Done",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "x": 955,
+    "y": 155,
+    "wires": []
+  },
+  {
+    "id": "mailgeo",
+    "type": "e-mail",
+    "z": "tabgeo",
+    "server": "smtp.example.com",
+    "port": "465",
+    "authtype": "BASIC",
+    "saslformat": false,
+    "token": "oauth2Response.access_token",
+    "secure": true,
+    "tls": true,
+    "name": "",
+    "dname": "OPTIONAL: configure SMTP (disabled)",
+    "disabled": true,
+    "x": 1000,
+    "y": 110,
+    "wires": []
+  }
+]

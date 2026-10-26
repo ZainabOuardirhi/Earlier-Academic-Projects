@@ -1,0 +1,12 @@
+1. Unzip this package to Downloads.
+2. Review files, then create a NEW private GitHub repository named Earlier-Academic-Projects, without initializing it.
+3. In PowerShell:
+   cd "$HOME\Downloads\Earlier-Academic-Projects"
+   git init
+   git branch -M main
+   git add .
+   git commit -m "Add historical project reconstructions and provenance notes"
+   git remote add origin https://github.com/ZainabOuardirhi/Earlier-Academic-Projects.git
+   git push -u origin main
+4. Do not publish until you review for credentials and verify the implementations.
+5. Preserve the old Udacity fork at its existing URL; this collection links to it rather than falsely treating starter code as completed coursework.
