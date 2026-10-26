@@ -1,4 +1,4 @@
-# Landmark Classification — Udacity CNN coursework
+# Landmark Classification: Udacity CNN coursework
 
 Original source: [my fork of Udacity nd101-c2-landmarks-starter](https://github.com/ZainabOuardirhi/nd101-c2-landmarks-starter).
 
